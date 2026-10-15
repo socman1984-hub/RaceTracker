@@ -36,6 +36,18 @@ Xcode required for development.
 
 The app will load on your phone and hot-reload as you make changes.
 
+## Playing it in your phone's browser
+
+The app is hosted on GitHub Pages at
+**https://socman1984-hub.github.io/RaceTracker/**. On iPhone, open it in Safari,
+tap Share → **Add to Home Screen**, and it runs full-screen and works offline.
+Data is saved in that browser on that phone.
+
+To publish changes:
+```bash
+npm run deploy:pages
+```
+
 ## Later: a real standalone app (no Expo Go)
 
 When you're happy with it and want a proper installable app icon (not just

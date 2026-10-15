@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "build:web": "node scripts/build-web.js",
-    "serve:web": "npx serve dist -s -l 4173"
+    "serve:web": "npx serve dist -s -l 4173",
+    "deploy:pages": "node scripts/deploy-pages.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
