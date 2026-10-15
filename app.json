@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Racing Tracker",
+    "slug": "racing-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "racingtracker",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.racingtracker.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "name": "Racing Tracker",
+      "shortName": "Racing",
+      "backgroundColor": "#ffffff",
+      "themeColor": "#E63946"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      "expo-font"
+    ],
+    "icon": "./assets/icon.png"
+  }
+}
