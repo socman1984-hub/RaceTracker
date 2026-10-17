@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useData } from "../../../src/DataContext";
 import { formatDate, placeLabel } from "../../../src/format";
@@ -12,6 +12,8 @@ export default function CompetitionDetail() {
   const router = useRouter();
 
   const competition = competitions.find((c) => c.id === id);
+  // Standings start hidden so nobody sees the score until they choose to.
+  const [showStandings, setShowStandings] = useState(false);
 
   const standings = useMemo(
     () => (competition ? computeStandings(competition) : []),
@@ -99,27 +101,41 @@ export default function CompetitionDetail() {
         </Text>
       </View>
 
-      <Text style={styles.sectionTitle}>Standings</Text>
-      <View style={styles.card}>
-        {standings.map((entry) => {
-          const racer = getRacerById(entry.racerId);
-          const isWinner = !isActive && winnerIds.includes(entry.racerId);
-          return (
-            <View key={entry.racerId} style={styles.standingRow}>
-              <Text style={styles.rank}>{entry.rank}</Text>
-              <View
-                style={[
-                  styles.colorDot,
-                  { backgroundColor: racer?.color ?? "#ccc" },
-                ]}
-              />
-              <Text style={styles.standingName}>{racer?.name ?? "Unknown"}</Text>
-              {isWinner && <Ionicons name="trophy" size={18} color="#F4A261" />}
-              <Text style={styles.points}>{entry.points} pts</Text>
-            </View>
-          );
-        })}
-      </View>
+      <Pressable
+        style={styles.collapseHeader}
+        onPress={() => setShowStandings((v) => !v)}
+        hitSlop={6}
+      >
+        <Text style={[styles.sectionTitle, styles.collapseTitle]}>Standings</Text>
+        <Text style={styles.collapseHint}>{showStandings ? "Hide" : "Tap to show"}</Text>
+        <Ionicons
+          name={showStandings ? "chevron-up" : "chevron-down"}
+          size={18}
+          color="#999"
+        />
+      </Pressable>
+      {showStandings && (
+        <View style={styles.card}>
+          {standings.map((entry) => {
+            const racer = getRacerById(entry.racerId);
+            const isWinner = !isActive && winnerIds.includes(entry.racerId);
+            return (
+              <View key={entry.racerId} style={styles.standingRow}>
+                <Text style={styles.rank}>{entry.rank}</Text>
+                <View
+                  style={[
+                    styles.colorDot,
+                    { backgroundColor: racer?.color ?? "#ccc" },
+                  ]}
+                />
+                <Text style={styles.standingName}>{racer?.name ?? "Unknown"}</Text>
+                {isWinner && <Ionicons name="trophy" size={18} color="#F4A261" />}
+                <Text style={styles.points}>{entry.points} pts</Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
 
       <Text style={styles.sectionTitle}>
         Races ({competition.races.length})
@@ -203,6 +219,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 8,
   },
+  collapseHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    marginBottom: 8,
+    gap: 6,
+  },
+  collapseTitle: { flex: 1, marginTop: 0, marginBottom: 0 },
+  collapseHint: { fontSize: 13, color: "#999" },
   card: {
     backgroundColor: "#fafafa",
     borderRadius: 12,
