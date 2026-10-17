@@ -30,14 +30,11 @@ export default function CompetitionDetail() {
       "End Competition",
       () => {
         endCompetition(competition.id);
-        const finalStandings = computeStandings(competition);
-        const winners = getWinnerIds(finalStandings)
-          .map((wid) => getRacerById(wid)?.name ?? "Unknown")
-          .join(" & ");
-        notify(
-          "Competition complete",
-          winners ? `Winner: ${winners} 🏆` : "No races were recorded."
-        );
+        if (competition.races.length === 0) {
+          notify("Competition complete", "No races were recorded.");
+          return;
+        }
+        router.push(`/competition/${competition.id}/reveal`);
       }
     );
   }
@@ -177,6 +174,17 @@ export default function CompetitionDetail() {
           </Pressable>
           <Pressable style={styles.secondaryButton} onPress={handleEnd}>
             <Text style={styles.secondaryButtonText}>Competition Over</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {!isActive && competition.races.length > 0 && (
+        <View style={styles.actions}>
+          <Pressable
+            style={styles.primaryButton}
+            onPress={() => router.push(`/competition/${competition.id}/reveal`)}
+          >
+            <Text style={styles.primaryButtonText}>Replay Results Reveal</Text>
           </Pressable>
         </View>
       )}

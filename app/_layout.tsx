@@ -26,6 +26,14 @@ export default function RootLayout() {
             name="competition/[id]/race-new"
             options={{ presentation: "modal", title: "Add Race" }}
           />
+          <Stack.Screen
+            name="competition/[id]/reveal"
+            options={{
+              presentation: "fullScreenModal",
+              headerShown: false,
+              animation: "fade",
+            }}
+          />
         </Stack>
       </DataProvider>
     </SafeAreaProvider>
