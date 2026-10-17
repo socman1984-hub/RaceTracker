@@ -1,7 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,6 +10,7 @@ import {
 } from "react-native";
 import { RACER_COLORS } from "../src/colors";
 import { useData } from "../src/DataContext";
+import { confirm, notify } from "../src/dialogs";
 import { formatDate, ordinal } from "../src/format";
 import { computeStandings, getWinnerIds } from "../src/scoring";
 
@@ -63,7 +63,7 @@ export default function RacerForm() {
     const trimmedName = name.trim();
     const trimmedCarNumber = carNumber.trim();
     if (!trimmedName) {
-      Alert.alert("Name required", "Please enter a name for this racer.");
+      notify("Name required", "Please enter a name for this racer.");
       return;
     }
     if (isEdit) {
@@ -81,26 +81,20 @@ export default function RacerForm() {
   function handleDelete() {
     if (!existing) return;
     if (!canDeleteRacer(existing.id)) {
-      Alert.alert(
+      notify(
         "Can't delete",
         `${existing.name} is part of a competition and can't be deleted, since that would break past race results. Remove them from future competitions instead.`
       );
       return;
     }
-    Alert.alert(
+    confirm(
       "Delete racer",
       `Delete ${existing.name}? This cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            deleteRacer(existing.id);
-            router.back();
-          },
-        },
-      ]
+      "Delete",
+      () => {
+        deleteRacer(existing.id);
+        router.back();
+      }
     );
   }
 

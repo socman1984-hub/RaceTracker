@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { useData } from "../../src/DataContext";
+import { confirm } from "../../src/dialogs";
 import { formatDate } from "../../src/format";
 import { computeStandings, getWinnerIds } from "../../src/scoring";
 import { Competition } from "../../src/types";
@@ -23,17 +24,11 @@ export default function CompetitionsScreen() {
   );
 
   function confirmDelete(competition: Competition) {
-    Alert.alert(
+    confirm(
       "Delete competition",
       `Delete "${competition.name}" and all its race results? This cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => deleteCompetition(competition.id),
-        },
-      ]
+      "Delete",
+      () => deleteCompetition(competition.id)
     );
   }
 

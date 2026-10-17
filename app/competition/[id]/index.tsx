@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useData } from "../../../src/DataContext";
+import { confirm, notify } from "../../../src/dialogs";
 import { formatDate, placeLabel } from "../../../src/format";
 import { computeStandings, getWinnerIds, pointsForRacerInRace } from "../../../src/scoring";
 
@@ -23,46 +24,34 @@ export default function CompetitionDetail() {
 
   function handleEnd() {
     if (!competition) return;
-    Alert.alert(
+    confirm(
       "End competition?",
       "Final points will be tallied and no more races can be added.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "End Competition",
-          style: "destructive",
-          onPress: () => {
-            endCompetition(competition.id);
-            const finalStandings = computeStandings(competition);
-            const winners = getWinnerIds(finalStandings)
-              .map((wid) => getRacerById(wid)?.name ?? "Unknown")
-              .join(" & ");
-            Alert.alert(
-              "Competition complete",
-              winners ? `Winner: ${winners} 🏆` : "No races were recorded."
-            );
-          },
-        },
-      ]
+      "End Competition",
+      () => {
+        endCompetition(competition.id);
+        const finalStandings = computeStandings(competition);
+        const winners = getWinnerIds(finalStandings)
+          .map((wid) => getRacerById(wid)?.name ?? "Unknown")
+          .join(" & ");
+        notify(
+          "Competition complete",
+          winners ? `Winner: ${winners} 🏆` : "No races were recorded."
+        );
+      }
     );
   }
 
   function handleDelete() {
     if (!competition) return;
-    Alert.alert(
+    confirm(
       "Delete competition",
       `Delete "${competition.name}" and all its race results? This cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            deleteCompetition(competition.id);
-            router.back();
-          },
-        },
-      ]
+      "Delete",
+      () => {
+        deleteCompetition(competition.id);
+        router.back();
+      }
     );
   }
 
